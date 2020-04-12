@@ -5,29 +5,29 @@ export interface Card {
   idx : number,
   phrases : Array<string>,
   level : number,
+  valid : boolean,
+};
+
+export const NullCard : Card = {
+  idx : -1,
+  phrases: [],
+  level: -1,
+  valid: false,
 };
 
 class CardManager {
   cards = en_es_cards;
   cardLevels = new CardLevels(this.cards.length);
 
-  constructor() {
-    console.log('Create CardManager!!!');
-  }
-
-  // TODO: remove idx input parameter
-  // TODO: rename to just getNextCard(void)
-  getCardInfo(idx: number) : Card {
+  // TODO: remove curCard input parameter
+  getNextCard(curCard: Card) : Card {
+    const idx = (curCard.idx + 1) % this.cards.length;
     return {
       idx: idx,
       phrases: this.cards[idx],
       level: this.cardLevels.getCardLevelByIdx(idx),
+      valid: true,
     }
-  }
-
-  // TODO: remove this.  useEffect should call getCardInfo directly.
-  getNextCardIdx(idx: number) : number {
-    return (idx + 1) % this.cards.length;
   }
 
   markCardAsCorrect(card: Card) {

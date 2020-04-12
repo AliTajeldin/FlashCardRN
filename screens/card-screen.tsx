@@ -1,35 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
-import cardManager from '../cards/card-mgr';
+import cardManager, {Card, NullCard} from '../cards/card-mgr';
 
-const s1 = 'hello\nthere';
 export const CardScreen = () => {
-  // TODO: this should be the actual card 
-  // TODO: use useEffect to get first card!
-  const [curCardIdx, setCurCardIdx] = useState(0);
+  const [curCard, setCurCard] = useState<Card>(NullCard);
 
-  console.log('Render CardScreen:v5');
+  useEffect(() => {
+    loadNextCard();
+  }, []);
+
+  console.log('Render CardScreen:v8');
+
+  const loadNextCard = () => {
+    setCurCard(cardManager.getNextCard(curCard));
+  }
 
   const s1Touch = () => {
     console.log('s1 touched!');
-    setCurCardIdx(cardManager.getNextCardIdx(curCardIdx));
+    cardManager.markCardAsCorrect(curCard);
+    loadNextCard();
   }
-  const s2Touch = () => console.log('s2 touched!');
-  const card = cardManager.getCardInfo(curCardIdx);
 
-  return (
-    <View style={styles.container}>
-      <TouchableHighlight style={styles.box1} onPress={s1Touch}>
-        <Text style={styles.text}>{card.phrases[0]}</Text>
-      </TouchableHighlight>
-      <TouchableHighlight style={styles.box2} onPress={s2Touch}>
-        <Text style={styles.text}>{card.phrases[1]}</Text>
-      </TouchableHighlight>
-      <View style={styles.box3}>
-        <Text style={styles.smallText}>index: {card.idx}  level: {card.level}</Text>
+  const s2Touch = () => console.log('s2 touched!');
+
+  const renderCard = (card: Card) => {
+    return (
+      <View style={styles.container}>
+        <TouchableHighlight style={styles.box1} onPress={s1Touch}>
+          <Text style={styles.text}>{card.phrases[0]}</Text>
+        </TouchableHighlight>
+        <TouchableHighlight style={styles.box2} onPress={s2Touch}>
+          <Text style={styles.text}>{card.phrases[1]}</Text>
+        </TouchableHighlight>
+        <View style={styles.box3}>
+          <Text style={styles.smallText}>index: {card.idx}  level: {card.level}</Text>
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
+
+  return (curCard === null ? null : renderCard(curCard as Card));
 }
 
 const styles = StyleSheet.create({
