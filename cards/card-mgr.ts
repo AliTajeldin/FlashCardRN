@@ -1,26 +1,41 @@
 import { cards as en_es_cards } from './en-es';
+import { CardLevels } from './card-levels';
+
+export interface Card {
+  idx : number,
+  phrases : Array<string>,
+  level : number,
+};
 
 class CardManager {
   cards = en_es_cards;
-  cardLevel = new Array<number>(this.cards.length);
+  cardLevels = new CardLevels(this.cards.length);
 
   constructor() {
     console.log('Create CardManager!!!');
-    for (let i=0; i < this.cards.length; ++i) {
-      this.cardLevel[i] = Math.floor(Math.random() * 10);
-    }
-    console.log('cardLevels:', this.cardLevel);
   }
 
-  getCardInfo(idx: number) {
+  // TODO: remove idx input parameter
+  // TODO: rename to just getNextCard(void)
+  getCardInfo(idx: number) : Card {
     return {
+      idx: idx,
       phrases: this.cards[idx],
-      level: this.cardLevel[idx],
+      level: this.cardLevels.getCardLevelByIdx(idx),
     }
   }
 
-  getNextCardIdx(idx: number) {
+  // TODO: remove this.  useEffect should call getCardInfo directly.
+  getNextCardIdx(idx: number) : number {
     return (idx + 1) % this.cards.length;
+  }
+
+  markCardAsCorrect(card: Card) {
+    this.cardLevels.markCardAsCorrectByIdx(card.idx);
+  }
+
+  markCardAsWrong(card: Card) {
+    this.cardLevels.markCardAsWrongByIdx(card.idx);
   }
 }
 

@@ -4,16 +4,18 @@ import cardManager from '../cards/card-mgr';
 
 const s1 = 'hello\nthere';
 export const CardScreen = () => {
-  const [curCard, setCurCard] = useState(0);
+  // TODO: this should be the actual card 
+  // TODO: use useEffect to get first card!
+  const [curCardIdx, setCurCardIdx] = useState(0);
 
-  console.log('Render CardScreen:v4');
+  console.log('Render CardScreen:v5');
 
   const s1Touch = () => {
     console.log('s1 touched!');
-    setCurCard(cardManager.getNextCardIdx(curCard));
+    setCurCardIdx(cardManager.getNextCardIdx(curCardIdx));
   }
   const s2Touch = () => console.log('s2 touched!');
-  const card = cardManager.getCardInfo(curCard);
+  const card = cardManager.getCardInfo(curCardIdx);
 
   return (
     <View style={styles.container}>
@@ -24,7 +26,7 @@ export const CardScreen = () => {
         <Text style={styles.text}>{card.phrases[1]}</Text>
       </TouchableHighlight>
       <View style={styles.box3}>
-        <Text style={styles.smallText}>index: {curCard}  level: {card.level}</Text>
+        <Text style={styles.smallText}>index: {card.idx}  level: {card.level}</Text>
       </View>
     </View>
   );
