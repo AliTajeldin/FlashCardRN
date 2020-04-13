@@ -20,7 +20,7 @@ class CardManager {
   cardLevels = new CardLevels(this.cards.length);
 
   // TODO: remove curCard input parameter
-  getNextCard(curCard: Card) : Card {
+  async getNextCard(curCard: Card) : Promise<Card> {
     const idx = (curCard.idx + 1) % this.cards.length;
     return {
       idx: idx,
@@ -30,11 +30,11 @@ class CardManager {
     }
   }
 
-  markCardAsCorrect(card: Card) {
+  async markCardAsCorrect(card: Card) {
     this.cardLevels.markCardAsCorrectByIdx(card.idx);
   }
 
-  markCardAsWrong(card: Card) {
+  async markCardAsWrong(card: Card) {
     this.cardLevels.markCardAsWrongByIdx(card.idx);
   }
 }

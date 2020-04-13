@@ -11,8 +11,9 @@ export const CardScreen = () => {
 
   console.log('Render CardScreen:v8');
 
-  const loadNextCard = () => {
-    setCurCard(cardManager.getNextCard(curCard));
+  const loadNextCard = async () => {
+    const newCard = await cardManager.getNextCard(curCard)
+    setCurCard(newCard);
   }
 
   const s1Touch = () => {
@@ -42,6 +43,7 @@ export const CardScreen = () => {
   return (curCard === null ? null : renderCard(curCard as Card));
 }
 
+// color pallete from: https://coolors.co/ccdad1-9caea9-788585-6f6866-38302e
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -53,24 +55,27 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#700',
+    backgroundColor: '#CCDAD1',
   },
   box2: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#070',
+    backgroundColor: '#9CAEA9',
   },
   box3: {
     minHeight: 30,
-    backgroundColor: '#00f',
+    backgroundColor: '#6F6866',
   },
   text: {
-    color: 'white',
+    color: 'black',
     fontSize: 18,
   },
   smallText: {
     color: 'white',
     fontSize: 12,
+  },
+  levelBar: {
+    backgroundColor: '#ecce6d',
   }
 });
