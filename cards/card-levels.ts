@@ -1,44 +1,53 @@
-import { AppState, AsyncStorage } from "react-native";
+import { AppState, AsyncStorage } from 'react-native';
+
 // import AsyncStorage from '@react-native-community/async-storage';
 
 /**
  * Manage current levels for cards
  */
 export class CardLevels {
-  levels : Array<number>;
+  // cached levels.  Should not be used directly.  Use `getLevels` instead.
+  private levels : Promise<Array<number>> = this._initLevels();
 
-  constructor(numOfCards: number) {
-    console.log('Create CardLevels!!!V3');
-    this.testAsyncStorage();
-    this.levels = new Array<number>(numOfCards);
-    for (let i=0; i < numOfCards; ++i) {
-      this.levels[i] = Math.floor(Math.random() * 10);
-    }
-    console.log('cardLevels:', this.levels);
-    console.log('Register app state change');
+  constructor(private numOfCards: number) {
+    console.log('Register app state change: V2');
     AppState.addEventListener('change', this._handleAppStateChange);
   }
 
-  async testAsyncStorage() {
-    // await AsyncStorage.setItem('@fc_key2', 'hello_world');
-    const v = await AsyncStorage.getItem('@fc_key2');
-    console.log('AsyncStorage value=', v);
+  /**
+   * get the levels from the AsyncStorage or use the cached value if available.
+   */
+  private async _initLevels() : Promise<Array<number>> {
+    // try to read the value stored in AysncStorage
+    const levelsJsonStr = await AsyncStorage.getItem('@fc_levels');
+    if (levelsJsonStr !== null) {
+      console.log('Using json levels from AsyncStorage');
+      return JSON.parse(levelsJsonStr) as Array<number>;
+    }
+
+    // fallback to random levels array for now.
+    console.log('Using randome levels array');
+    const ll = new Array<number>(this.numOfCards);
+    for (let i=0; i < this.numOfCards; ++i) {
+      ll[i] = Math.floor(Math.random() * 10);
+    }
+    return ll;
   }
 
   _handleAppStateChange(nextAppState: string) {
     console.log('APP STATE CHANGE', nextAppState);
   }
 
-  getCardLevelByIdx(idx: number) : number {
-    return this.levels[idx];
+  async getCardLevelByIdx(idx: number) : Promise<number> {
+    return (await this.levels)[idx];
   }
 
-  markCardAsCorrectByIdx(idx: number) {
-    this.levels[idx] += 1;
+  async markCardAsCorrectByIdx(idx: number) {
+    (await this.levels)[idx] += 1;
   }
 
-  markCardAsWrongByIdx(idx: number) {
-    this.levels[idx] >>= 1;
+  async markCardAsWrongByIdx(idx: number) {
+    (await this.levels)[idx] >>= 1;
   }
 
 }

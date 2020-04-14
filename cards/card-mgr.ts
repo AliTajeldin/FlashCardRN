@@ -22,20 +22,22 @@ class CardManager {
   // TODO: remove curCard input parameter
   async getNextCard(curCard: Card) : Promise<Card> {
     const idx = (curCard.idx + 1) % this.cards.length;
+    const level = await this.cardLevels.getCardLevelByIdx(idx);
+    console.log('got level', level, ' for card idx:', idx);
     return {
       idx: idx,
       phrases: this.cards[idx],
-      level: this.cardLevels.getCardLevelByIdx(idx),
+      level: level,
       valid: true,
     }
   }
 
   async markCardAsCorrect(card: Card) {
-    this.cardLevels.markCardAsCorrectByIdx(card.idx);
+    await this.cardLevels.markCardAsCorrectByIdx(card.idx);
   }
 
   async markCardAsWrong(card: Card) {
-    this.cardLevels.markCardAsWrongByIdx(card.idx);
+    await this.cardLevels.markCardAsWrongByIdx(card.idx);
   }
 }
 

@@ -9,20 +9,24 @@ export const CardScreen = () => {
     loadNextCard();
   }, []);
 
-  console.log('Render CardScreen:v8');
+  console.log('Render CardScreen:v9');
 
   const loadNextCard = async () => {
     const newCard = await cardManager.getNextCard(curCard)
     setCurCard(newCard);
   }
 
-  const s1Touch = () => {
-    console.log('s1 touched!');
-    cardManager.markCardAsCorrect(curCard);
-    loadNextCard();
+  const s1Touch = async () => {
+    console.log('s1 touched! V2');
+    await cardManager.markCardAsCorrect(curCard);
+    await loadNextCard();
   }
 
-  const s2Touch = () => console.log('s2 touched!');
+  const s2Touch = async () => {
+    console.log('s2 touched!');
+    await cardManager.markCardAsWrong(curCard);
+    await loadNextCard();
+  }
 
   const renderCard = (card: Card) => {
     return (
